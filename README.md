@@ -47,6 +47,29 @@ npm run preview
 
 ---
 
+## Publish to GitHub (public)
+
+This machine has **Git** and (after install) the **GitHub CLI** (`gh`). Creating a public repo and pushing **requires a one-time login** to your GitHub account (the agent cannot do that for you without your credentials).
+
+1. **Install GitHub CLI** (if `gh` is not found):  
+   `winget install GitHub.cli`
+2. **Log in** (device flow — browser):  
+   ```
+   "C:\Program Files\GitHub CLI\gh.exe" auth login --hostname github.com --git-protocol https --web
+   ```  
+   Open [github.com/login/device](https://github.com/login/device) and paste the one-time code from the terminal.
+3. **From the repo root** (`UFO/`), create the public remote and push:  
+   ```powershell
+   .\scripts\publish-github.ps1
+   ```  
+   Or pick a name: `.\scripts\publish-github.ps1 -RepoName "pursue-uap-archive"`  
+   Equivalent one-liner:  
+   `gh repo create pursue-uap-archive --public --source . --remote origin --push --description "PURSUE UAP archive viewer"`
+
+If the repo name is already taken, change `-RepoName` / the `gh repo create` name.
+
+---
+
 ## Data source & disclaimer
 
 Official portal: [war.gov/UFO](https://www.war.gov/UFO/) (PURSUE).
