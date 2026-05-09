@@ -1,0 +1,47 @@
+{
+  "title": "WAR.gov UFO Release 01 MVP Index",
+  "generated_utc": "2026-05-08T18:20:10.594036+00:00",
+  "source_url": "https://www.war.gov/UFO/",
+  "scope": "39 core reliable embedded-text PDFs plus review-labeled expansion candidates from partial-text and OCR batches.",
+  "document_count": 87,
+  "core_reliable_document_count": 39,
+  "expanded_review_document_count": 9,
+  "ocr_review_document_count": 39,
+  "remaining_not_full_text_count": 29,
+  "image_exhibit_not_text_indexed_count": 25,
+  "ocr_needed_count": 0,
+  "total_pages": 4100,
+  "total_words": 720978,
+  "agency_counts": {
+    "Department of State": 7,
+    "Department of War": 48,
+    "FBI": 24,
+    "NASA": 8
+  },
+  "category_counts": {
+    "FBI serial/case material": 23,
+    "diplomatic cable": 7,
+    "document": 7,
+    "email correspondence": 3,
+    "historical incident records": 3,
+    "mission report": 27,
+    "range fouler/debrief": 7,
+    "report": 4,
+    "transcript": 2,
+    "transcript/debrief": 4
+  },
+  "limitations": [
+    "The 39 core documents use embedded text that looked reliable in the first scan; all expansion documents are searchable but labeled review-recommended.",
+    "OCR expansion excerpts can include OCR noise, encoding artifacts, redaction markers, rotated pages, or sparse pages. Treat them as navigation aids, not polished transcripts.",
+    "All 11 text-heavy PDFs from the initial OCR-needed queue now have first-pass OCR. 25 photo/sketch exhibit PDFs are tracked but not text-indexed, 3 sparse/redaction-heavy PDFs from batch 01 are not full-text searchable, and 1 OCR-checked file was too low-yield to add to search.",
+    "Descriptions come from the WAR.gov release CSV and local extraction metadata; they are not independent factual claims.",
+    "Video and image-only assets are out of scope for this text-first pass."
+  ],
+  "next_steps": [
+    "Spot-check OCR confidence on historic, faded, handwritten, rotated, image-heavy, or heavily redacted pages.",
+    "Add page-level method labels so users can distinguish embedded text, OCR text, sparse text, blank/redacted pages, and image-only exhibits.",
+    "Decide whether to add a separate image-review view for the 25 photo/sketch exhibit PDFs.",
+    "Keep the finding aid updated if WAR.gov adds, removes, or changes files."
+  ],
+  "mvp_note": "Automated, document-first MVP built from the WAR.gov release table. The search index now has a reliable core plus clearly labeled review-recommended expansion sets."
+}

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { ResolvedRecord } from '../lib/resolveRecord';
 
@@ -70,113 +71,124 @@ export function Inspector({
   onClose: () => void;
 }) {
   const [tab, setTab] = React.useState<Tab>('media');
+  const [portalEl, setPortalEl] = React.useState<HTMLElement | null>(null);
   const rec = item?.record;
+
+  React.useEffect(() => {
+    setPortalEl(document.body);
+  }, []);
 
   React.useEffect(() => {
     if (open) setTab('media');
   }, [open, item?.index]);
 
-  return (
-    <AnimatePresence>
-      {open && item && rec && (
-        <>
-          <motion.button
-            type="button"
-            className="inspector__backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            aria-label="Close"
-          />
-          <motion.aside
-            className="inspector"
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-          >
-            <header className="inspector__head">
-              <div>
-                <p className="inspector__kicker">{rec.agency}</p>
-                <h2 className="inspector__h2">{rec.title}</h2>
-              </div>
-              <button type="button" className="inspector__close" onClick={onClose}>
-                Close
-              </button>
-            </header>
+  if (!portalEl) return null;
 
-            <div className="inspector__tabs" role="tablist">
-              {(['overview', 'media', 'files', 'raw'] as Tab[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === t}
-                  className={`inspector__tab ${tab === t ? 'is-active' : ''}`}
-                  onClick={() => setTab(t)}
-                >
-                  {t === 'raw' ? 'Raw JSON' : t[0].toUpperCase() + t.slice(1)}
-                </button>
-              ))}
-            </div>
-
-            <div className="inspector__body">
-              {tab === 'overview' && (
-                <div className="inspector__prose">
-                  <dl className="inspector__dl">
-                    <div>
-                      <dt>Type</dt>
-                      <dd>{rec.type}</dd>
-                    </div>
-                    <div>
-                      <dt>Incident date</dt>
-                      <dd>{rec.incident_date}</dd>
-                    </div>
-                    <div>
-                      <dt>Location</dt>
-                      <dd>{rec.incident_location}</dd>
-                    </div>
-                  </dl>
-                  <p className="inspector__desc">{rec.description}</p>
-                  {rec.link ? (
-                    <a className="inspector__link" href={rec.link} target="_blank" rel="noreferrer">
-                      Original war.gov URL
-                    </a>
-                  ) : null}
+  return createPortal(
+      <AnimatePresence>
+        {open && item && rec ? (
+          <React.Fragment key={`inspector-${item.index}`}>
+            <motion.button
+              type="button"
+              className="inspector__backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+              aria-label="Close"
+            />
+            <motion.aside
+              className="inspector"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="inspector-title"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+            >
+              <header className="inspector__head">
+                <div>
+                  <p className="inspector__kicker">{rec.agency}</p>
+                  <h2 id="inspector-title" className="inspector__h2">
+                    {rec.title}
+                  </h2>
                 </div>
-              )}
+                <button type="button" className="inspector__close" onClick={onClose}>
+                  Close
+                </button>
+              </header>
 
-              {tab === 'media' && <PrimaryPreview item={item} />}
+              <div className="inspector__tabs" role="tablist">
+                {(['overview', 'media', 'files', 'raw'] as Tab[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab === t}
+                    className={`inspector__tab ${tab === t ? 'is-active' : ''}`}
+                    onClick={() => setTab(t)}
+                  >
+                    {t === 'raw' ? 'Raw JSON' : t[0].toUpperCase() + t.slice(1)}
+                  </button>
+                ))}
+              </div>
 
-              {tab === 'files' && (
-                <ul className="inspector__filelist">
-                  {item.files.map((f) => (
-                    <li key={f.path}>
-                      <a href={f.url} target="_blank" rel="noreferrer">
-                        {f.path}
+              <div className="inspector__body">
+                {tab === 'overview' && (
+                  <div className="inspector__prose">
+                    <dl className="inspector__dl">
+                      <div>
+                        <dt>Type</dt>
+                        <dd>{rec.type}</dd>
+                      </div>
+                      <div>
+                        <dt>Incident date</dt>
+                        <dd>{rec.incident_date}</dd>
+                      </div>
+                      <div>
+                        <dt>Location</dt>
+                        <dd>{rec.incident_location}</dd>
+                      </div>
+                    </dl>
+                    <p className="inspector__desc">{rec.description}</p>
+                    {rec.link ? (
+                      <a className="inspector__link" href={rec.link} target="_blank" rel="noreferrer">
+                        Original war.gov URL
                       </a>
-                      <span className="inspector__filekind">{f.kind}</span>
-                    </li>
-                  ))}
-                  {item.videoUrl ? (
-                    <li>
-                      <a href={item.videoUrl} target="_blank" rel="noreferrer">
-                        DVIDS / CloudFront video (source file)
-                      </a>
-                      <span className="inspector__filekind">video</span>
-                    </li>
-                  ) : null}
-                </ul>
-              )}
+                    ) : null}
+                  </div>
+                )}
 
-              {tab === 'raw' && (
-                <pre className="inspector__pre">{JSON.stringify(rec, null, 2)}</pre>
-              )}
-            </div>
-          </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
-  );
+                {tab === 'media' && <PrimaryPreview item={item} />}
+
+                {tab === 'files' && (
+                  <ul className="inspector__filelist">
+                    {item.files.map((f) => (
+                      <li key={f.path}>
+                        <a href={f.url} target="_blank" rel="noreferrer">
+                          {f.path}
+                        </a>
+                        <span className="inspector__filekind">{f.kind}</span>
+                      </li>
+                    ))}
+                    {item.videoUrl ? (
+                      <li>
+                        <a href={item.videoUrl} target="_blank" rel="noreferrer">
+                          DVIDS / CloudFront video (source file)
+                        </a>
+                        <span className="inspector__filekind">video</span>
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
+
+                {tab === 'raw' && <pre className="inspector__pre">{JSON.stringify(rec, null, 2)}</pre>}
+              </div>
+            </motion.aside>
+          </React.Fragment>
+        ) : null}
+      </AnimatePresence>,
+      portalEl,
+    );
 }

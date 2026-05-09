@@ -26,9 +26,14 @@ export function RecordCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      whileHover={{ y: -3, transition: { duration: 0.22 } }}
     >
-      <button type="button" className="record-card__btn" onClick={onOpen}>
+      <button
+        type="button"
+        className="record-card__btn"
+        onClick={onOpen}
+        aria-label={`Open ${record.title}`}
+      >
         <div className="record-card__thumb-wrap">
           <img
             src={preview}
