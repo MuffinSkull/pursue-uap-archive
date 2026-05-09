@@ -65,30 +65,6 @@ Needs `data/manifest.json` and `data/dvids_videos.json`. Output goes to `downloa
 
 ---
 
-## Publishing (how I pushed this)
-
-I use **Git** and the **GitHub CLI** (`gh`). One-time login:
-
-```powershell
-& "$env:ProgramFiles\GitHub CLI\gh.exe" auth login --hostname github.com --git-protocol https --web
-```
-
-Then from the repo root you can use my helper script or `gh repo create` — see `scripts/publish-github.ps1`. This repo is already public under my account (link at the top).
-
----
-
-## Repo layout (for anyone forking)
-
-| Path | What it is |
-|------|------------|
-| `viewer/` | The Vite + React app |
-| `viewer/public/` | Manifest + CSV + DVIDS JSON the UI fetches |
-| `data/` | Same files for local scripts |
-| `scripts/download-release.mjs` | Bulk download from the HF mirror |
-| `scripts/publish-github.ps1` | How I publish to GitHub |
-
----
-
 ## License
 
 I’m releasing **my code** under **MIT** — see [`LICENSE`](LICENSE) in this repo.
